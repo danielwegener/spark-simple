@@ -7,10 +7,15 @@ import org.apache.spark.rdd.RDD
 
 object SimpleApp {
   def main(args: Array[String]) {
-    val logFile = "YOUR_SPARK_HOME/README.md" // Should be some file on your system
-    val conf = new SparkConf().setAppName("Simple Application").setMaster("local")
+
+    val data = List(
+      "ot_Vid=8dfeca34-8cfae2fffa&sd_BBS=ok",
+      "ot_Vid=8dfeca34-8cfae2fffa&order_WarenkorbArtikelHinzufuegen=145243"
+    )
+    val conf = new SparkConf().setAppName("Simple Application")
     val sc = new SparkContext(conf)
-    val (numAs, numBs) = myApp(sc.textFile(logFile))
+    val rdd = sc.parallelize(data)
+    val (numAs, numBs) = myApp(rdd)
     println("Lines with a: %s, Lines with b: %s".format(numAs, numBs))
   }
 
