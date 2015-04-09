@@ -11,9 +11,6 @@ class SimpleAppTest extends WordSpec with Matchers {
     val sc = new SparkContext(conf)
 
     "have a working myApp function" in {
-      val (a,b) = SimpleApp.myApp(sc.parallelize(List("a","b","c")))
-      a should be(1)
-      b should be(2)
     }
 
   }
