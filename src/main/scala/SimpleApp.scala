@@ -8,7 +8,7 @@ import org.apache.spark.rdd.RDD
 object SimpleApp {
   def main(args: Array[String]) {
     val logFile = "YOUR_SPARK_HOME/README.md" // Should be some file on your system
-    val conf = new SparkConf().setAppName("Simple Application")
+    val conf = new SparkConf().setAppName("Simple Application").setMaster("local")
     val sc = new SparkContext(conf)
     val (numAs, numBs) = myApp(sc.textFile(logFile))
     println("Lines with a: %s, Lines with b: %s".format(numAs, numBs))
