@@ -42,12 +42,12 @@ object StreamingBingo {
       }
     }
 
-    val stateStream = guesses.updateStateByKey[StreamState]{
+    val stateStream = guesses.updateStateByKey[StreamState]{ (in, state) => (in,state ) match {
       case (in, None) => Some(Missing(buzzwords -- in))
       case (in, Some(Missing(words))) if words -- in == Set.empty[String] => Some(Done)
       case (in, Some(Missing(words))) => Some(Missing(words -- in))
       case (in, Some(Done)) => Some(Missing(buzzwords -- in))
-    }
+    }}
 
     stateStream.filter(_ == Done).map(name => s"$name screams BINGO!").print()
 
