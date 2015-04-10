@@ -34,9 +34,12 @@ object StreamingBingo {
     val kafkaStream = KafkaUtils.createStream(ssc,
       "192.168.1.105:2181", ""+Random.nextInt(), Map("test" -> 7))
 
-    val guesses = kafkaStream.map{ message =>
-      val nameAndBuzzword = message._2.split(" ")
-      (nameAndBuzzword(0), nameAndBuzzword(1))
+    val guesses = kafkaStream.map(_._2).map{ message =>
+      val nameAndBuzzword = message.split(" ").toList
+      nameAndBuzzword match {
+        case (name :: Nil) => (name, "")
+        case (name :: guess :: _) => (name, guess)
+      }
     }
 
     val stateStream = guesses.updateStateByKey[StreamState]{
@@ -46,7 +49,7 @@ object StreamingBingo {
       case (in, Some(Done)) => Some(Missing(buzzwords -- in))
     }
 
-    stateStream.filter(_ == Done).map(_._1).print()
+    stateStream.filter(_ == Done).map(name => s"$name screams BINGO!").print()
 
     kafkaStream.print()
     ssc.start()
